@@ -1,0 +1,24 @@
+#In case URI is available
+spring:
+  data:
+    mongodb:
+      uri: <MONGODB_CONNECTION_STRING>
+      #Incase host and port are available
+      #host: localhost
+      #port: 27017
+      database: journaldb #If the database doesn't exist, then it will be automatically created.
+      auto-index-creation: true
+      #If the database requires a user and a password, the following properties need to be added.
+      #username=<DATABASE-USERNAME>
+      #password=<DATABASE-PASSWORD>
+  #For spring security
+  security:
+    user:
+      name: <SPRING SECURITY USERNAME>
+      password: <SPRING SECURITY PASSWORD>
+
+server:
+  port: 8080
+  servlet:
+    context-path: /journal-app #If a context path is provided, then the address for the application will be like
+    #localhost:8080/journal-app
