@@ -28,7 +28,7 @@ public class JournalEntryService {
         User user = userService.findByUserName(userName).get();
         JournalEntry savedEntry = journalEntryRepository.save(journalEntry);
         user.getJournalEntries().add(savedEntry);
-        //This is an incorrect line meant to for checking how transactions happen in Spring Data MongoDB
+        //This is an incorrect line meant for checking how transactions happen in Spring Data MongoDB
 //        user.setUserName(null);
         userService.saveUser(user);
         } catch (Exception e) {

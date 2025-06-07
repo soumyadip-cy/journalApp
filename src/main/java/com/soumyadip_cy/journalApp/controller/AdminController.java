@@ -19,6 +19,7 @@ public class AdminController {
     @GetMapping("/all-users")
     public ResponseEntity<?> getAllUsers() {
         try {
+            System.out.println("Spring");
             List<User> userList = userService.getAll();
             if (userList != null && !userList.isEmpty()) {
                 return new ResponseEntity<>(userList, HttpStatus.OK);
