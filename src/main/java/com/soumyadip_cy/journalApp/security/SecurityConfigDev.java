@@ -15,17 +15,18 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Configuration
 @EnableWebSecurity
-@Profile("prod")
-public class SecurityConfig extends WebSecurityConfigurerAdapter {
+@Profile("dev")
+public class SecurityConfigDev extends WebSecurityConfigurerAdapter {
 
     @Autowired
     UserDetailsServiceImpl userDetailsService;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        //In 'prod' profile every request must be authenticated
         http.authorizeRequests()
-                .anyRequest().authenticated()
+                .antMatchers("/journal/**", "/user/**").authenticated()
+                .antMatchers("/admin/**").authenticated()   //.hasRole("ADMIN")
+                .anyRequest().permitAll()
                 .and()
                 .httpBasic()
                 .and()

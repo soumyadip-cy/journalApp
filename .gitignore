@@ -21,7 +21,9 @@ target/
 *.ipr
 /htmlReport
 src/main/resources/application.properties
-src/main/resources/application.yml
+src/main/resources/application-dev.yml
+src/main/resources/application-prod.yml
+src/main/resources/deprecated/
 ### NetBeans ###
 /nbproject/private/
 /nbbuild/
