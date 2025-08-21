@@ -4,6 +4,7 @@ import com.soumyadip_cy.journalApp.entity.JournalEntry;
 import com.soumyadip_cy.journalApp.entity.User;
 import com.soumyadip_cy.journalApp.service.JournalEntryService;
 import com.soumyadip_cy.journalApp.service.UserService;
+import lombok.extern.slf4j.Slf4j;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,6 +18,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/journal")
+@Slf4j
 public class JournalEntryController {
 
     @Autowired
@@ -33,13 +35,16 @@ public class JournalEntryController {
             if(user.isPresent()) {
                 List<JournalEntry> allEntries = user.get().getJournalEntries();
                 if (allEntries != null && !allEntries.isEmpty()) {
+                    log.info("Showing all journal entries !");
                     return new ResponseEntity<>(allEntries, HttpStatus.OK);
                 }
             }
+            log.info("No journal entries found !");
             return new ResponseEntity<>("No entries found", HttpStatus.NOT_FOUND);
             // Another approach
 //            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No journal entries found.");
         } catch (Exception e) {
+            log.error("Exception occurred while fetching journal entries",e);
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
@@ -49,8 +54,10 @@ public class JournalEntryController {
         try {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             journalEntryService.saveEntry(myEntry, authentication.getName());
+            log.info("Journal entry created !");
             return new ResponseEntity<>(myEntry, HttpStatus.CREATED);
         } catch (Exception e) {
+            log.error("Exception occurred while creating journal entry", e);
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
@@ -64,12 +71,16 @@ public class JournalEntryController {
             List<JournalEntry> collect = user.getJournalEntries().stream().filter(x -> x.getId().equals(myId)).collect(Collectors.toList());
             if(!collect.isEmpty()) {
                 Optional<JournalEntry> journalEntry = journalEntryService.findById(myId);
-                if(journalEntry.isPresent())
+                if(journalEntry.isPresent()) {
+                    log.info("Journal entry found !");
                     return new ResponseEntity<>(journalEntry.get(), HttpStatus.OK);
+                }
             }
         } catch (Exception e) {
+            log.error("Exception occurred while fetching journal entry !",e);
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
+        log.info("Journal entry not found !");
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
@@ -86,11 +97,13 @@ public class JournalEntryController {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             String userName = authentication.getName();
             boolean removed = journalEntryService.deleteById(myId, userName);
+            log.info("Journal entry deletion completed with result: '{}'", removed);
             if(removed)
                 return new ResponseEntity<>("Requested Journal Entry is deleted !", HttpStatus.OK);
             else
                 return new ResponseEntity<>("Requested Journal Entry is not found !", HttpStatus.NOT_FOUND);
         } catch (Exception e) {
+            log.error("Exception occurred while deleting journal entry !",e);
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
@@ -110,11 +123,14 @@ public class JournalEntryController {
                     entry.setTitle(changedEntry.getTitle() != null && !changedEntry.getTitle().isEmpty() ? changedEntry.getTitle() : entry.getTitle());
                     entry.setContent(changedEntry.getContent() != null && !changedEntry.getContent().isEmpty() ? changedEntry.getContent() : entry.getContent());
                     journalEntryService.saveEntry(entry);
+                    log.info("Journal entry edited !");
                     return new ResponseEntity<>(entry, HttpStatus.CREATED);
                 }
             }
+            log.info("Journal entry not found for editing !");
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } catch (Exception e) {
+            log.error("Exception occurred while editing journal entry !",e);
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }

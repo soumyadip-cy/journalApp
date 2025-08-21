@@ -1,0 +1,105 @@
+<configuration>
+
+    <!-- Appender and Logger configurations will go here -->
+
+    <timestamp key="timeVar" datePattern="yyyy_MM_dd'T'HH_mm_ss"/>
+    <property name="logPattern" value="%d{yyyy MM dd 'T'HH:mm:ss.SSS} %-5level | [%thread] %logger{36} |=> %msg%n"/>
+
+    <appender name="journalAppConsoleAppender" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>
+                ${logPattern}
+            </pattern>
+        </encoder>
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>WARN</level>
+        </filter>
+    </appender>
+
+    <appender name="journalAppALLFileAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <encoder>
+            <pattern>
+                ${logPattern}
+            </pattern>
+        </encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+                <fileNamePattern>logs/journalApp_ALL_%d{yyyy_MM_dd_HH}.%i.log</fileNamePattern>
+                <maxFileSize>10MB</maxFileSize>
+                <maxHistory>10</maxHistory>
+        </rollingPolicy>
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>TRACE</level>
+        </filter>
+    </appender>
+
+    <appender name="journalAppINFOFileAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <encoder>
+            <pattern>
+                ${logPattern}
+            </pattern>
+        </encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>logs/journalApp_INFO_%d{yyyy_MM_dd_HH}.%i.log</fileNamePattern>
+            <maxFileSize>10MB</maxFileSize>
+            <maxHistory>10</maxHistory>
+        </rollingPolicy>
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>INFO</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+    </appender>
+
+    <appender name="journalAppWARNFileAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <encoder>
+            <pattern>
+                ${logPattern}
+            </pattern>
+        </encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>logs/journalApp_WARN_%d{yyyy_MM_dd_HH}.%i.log</fileNamePattern>
+            <maxFileSize>10MB</maxFileSize>
+            <maxHistory>10</maxHistory>
+        </rollingPolicy>
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>WARN</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+    </appender>
+
+    <appender name="journalAppERRORFileAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <encoder>
+            <pattern>
+                ${logPattern}
+            </pattern>
+        </encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>logs/journalApp_ERROR_%d{yyyy_MM_dd_HH}.%i.log</fileNamePattern>
+            <maxFileSize>10MB</maxFileSize>
+            <maxHistory>10</maxHistory>
+        </rollingPolicy>
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>ERROR</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+    </appender>
+
+    <root level="TRACE">
+        <appender-ref ref="journalAppConsoleAppender" />
+        <appender-ref ref="journalAppALLFileAppender" />
+        <appender-ref ref="journalAppINFOFileAppender" />
+        <appender-ref ref="journalAppWARNFileAppender" />
+        <appender-ref ref="journalAppERRORFileAppender" />
+    </root>
+
+    <logger name="com.soumyadip_cy.journalApp" level="TRACE">
+        <appender-ref ref="journalAppConsoleAppender" />
+        <appender-ref ref="journalAppALLFileAppender" />
+        <appender-ref ref="journalAppINFOFileAppender" />
+        <appender-ref ref="journalAppWARNFileAppender" />
+        <appender-ref ref="journalAppERRORFileAppender" />
+    </logger>
+
+</configuration>

@@ -2,6 +2,8 @@ package com.soumyadip_cy.journalApp.service;
 
 import com.soumyadip_cy.journalApp.entity.User;
 import com.soumyadip_cy.journalApp.repository.UserRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -20,6 +22,8 @@ public class UserService {
 
     private static final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
+    private static final Logger logger = LoggerFactory.getLogger(UserService.class);
+
     //This is used during creation/modification
     public boolean createUser(User user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
@@ -27,18 +31,30 @@ public class UserService {
         try {
             userRepository.save(user);
         } catch (DuplicateKeyException dupKeyException) {
-            System.out.println("Tried to create duplicate user !");
+            logger.error("Tried to create duplicate user '{}' !", user.getUserName(), dupKeyException);
+            return false;
+        } catch (Exception e) {
+            logger.error("Exception occurred during the creation of a new user: ", e);
             return false;
         }
+        logger.info("New user created !");
         return true;
     }
 
     //This is used to create an Admin user
     public boolean createAdmin(User user) {
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        user.setRoles(Arrays.asList("USER", "ADMIN"));
-        userRepository.save(user);
-        return true;
+        boolean success = false;
+        try {
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
+            user.setRoles(Arrays.asList("USER", "ADMIN"));
+            userRepository.save(user);
+            success = true;
+        } catch (Exception e) {
+            logger.error("Exception in admin creation !",e);
+            return success;
+        }
+        logger.info("Admin creation successful !");
+        return success;
     }
 
     //This will be used while saving a new journal entry, as the ID of the newly created journal entry will also be

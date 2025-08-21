@@ -2,6 +2,7 @@ package com.soumyadip_cy.journalApp.controller;
 
 import com.soumyadip_cy.journalApp.entity.User;
 import com.soumyadip_cy.journalApp.service.UserService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,6 +12,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/public")
+@Slf4j
 public class PublicController {
 
     @Autowired
@@ -20,10 +22,14 @@ public class PublicController {
     public ResponseEntity<List<User>> getAll() {
         try {
             List<User> users = userService.getAll();
-            if(users !=null && !users.isEmpty())
+            if(users !=null && !users.isEmpty()) {
+                log.info("Users found !");
                 return new ResponseEntity<>(users, HttpStatus.OK);
+            }
+            log.info("User not found !");
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } catch (Exception e) {
+            log.error("Exception occurred while fetching all users !",e);
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
@@ -32,8 +38,10 @@ public class PublicController {
     public ResponseEntity<User> createUser(@RequestBody User myUser) {
         try {
             userService.createUser(myUser);
+            log.info("User created !");
             return new ResponseEntity<>(myUser, HttpStatus.CREATED);
         } catch (Exception e) {
+            log.error("Exception occurred while creating a user !",e);
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }

@@ -1,7 +1,7 @@
 package com.soumyadip_cy.journalApp;
 
 
-import org.springframework.beans.factory.annotation.Configurable;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
@@ -16,14 +16,14 @@ import java.util.Arrays;
 
 @SpringBootApplication
 @EnableTransactionManagement
+@Slf4j
 public class JournalApplication {
 
     public static void main(String[] args) {
         ConfigurableApplicationContext context = SpringApplication.run(JournalApplication.class, args);
         ConfigurableEnvironment environment = context.getEnvironment();
-        System.out.println("Spring Environment Details: " + context.getEnvironment());
-        System.out.println("Active profiles: ");
-        Arrays.stream(environment.getActiveProfiles()).forEach(System.out::println);
+        log.debug("Spring Environment Details: {}", context.getEnvironment());
+        Arrays.stream(environment.getActiveProfiles()).forEach(e -> log.debug("Active Profile: {}",e));
     }
 
     // PlatformTransactionManager is an interface like List<T>()
