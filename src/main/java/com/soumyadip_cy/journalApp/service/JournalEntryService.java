@@ -1,12 +1,13 @@
 package com.soumyadip_cy.journalApp.service;
 
+import com.soumyadip_cy.journalApp.dto.JournalEntryDTO;
 import com.soumyadip_cy.journalApp.entity.JournalEntry;
 import com.soumyadip_cy.journalApp.entity.User;
 import com.soumyadip_cy.journalApp.repository.JournalEntryRepository;
+import lombok.RequiredArgsConstructor;
 import org.bson.types.ObjectId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,13 +17,11 @@ import java.util.List;
 import java.util.Optional;
 
 @Component
+@RequiredArgsConstructor
 public class JournalEntryService {
 
-    @Autowired
-    private JournalEntryRepository journalEntryRepository;
-
-    @Autowired
-    private UserService userService;
+    private final JournalEntryRepository journalEntryRepository;
+    private final UserService userService;
 
     public static final Logger logger = LoggerFactory.getLogger(JournalEntryService.class);
 

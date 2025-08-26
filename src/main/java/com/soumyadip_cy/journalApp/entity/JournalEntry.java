@@ -1,5 +1,6 @@
 package com.soumyadip_cy.journalApp.entity;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
@@ -13,6 +14,7 @@ import java.time.LocalDateTime;
 //otherwise the name of the class will be considered as the name of the collection.
 @Document(collection = "journal_entries")
 @Data
+@AllArgsConstructor
 public class JournalEntry {
 
     //This annotation tells Spring Boot to consider this as primary key of the Mongo DB document.

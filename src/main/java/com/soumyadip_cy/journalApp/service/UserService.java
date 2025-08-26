@@ -1,7 +1,10 @@
 package com.soumyadip_cy.journalApp.service;
 
+import com.soumyadip_cy.journalApp.dto.UserDTO;
 import com.soumyadip_cy.journalApp.entity.User;
+import com.soumyadip_cy.journalApp.mapper.UserMapper;
 import com.soumyadip_cy.journalApp.repository.UserRepository;
+import lombok.Data;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,10 +18,10 @@ import java.util.List;
 import java.util.Optional;
 
 @Component
+@Data
 public class UserService {
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
     private static final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
@@ -66,6 +69,11 @@ public class UserService {
     //This is used to get all the users
     public List<User> getAll() {
         return userRepository.findAll();
+    }
+
+    public List<UserDTO> getAllUserDTO() {
+        //Current method reference = map(user -> UserMapper.INSTANCE.toUserDTO(user))
+        return getAll().stream().map(UserMapper.INSTANCE::toUserDTO).toList();
     }
 
     //This is used to get the user by their userName

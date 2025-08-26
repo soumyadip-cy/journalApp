@@ -1,5 +1,6 @@
 package com.soumyadip_cy.journalApp.entity;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NonNull;
@@ -14,6 +15,7 @@ import java.util.List;
 
 @Document(collection = "users")
 @Data
+@AllArgsConstructor
 @Builder
 public class User {
 
