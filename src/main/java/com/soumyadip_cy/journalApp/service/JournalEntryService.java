@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -32,6 +33,8 @@ public class JournalEntryService {
         User user = userService.findByUserName(userName).orElse(null);
         JournalEntry savedEntry = journalEntryRepository.save(journalEntry);
         if(user!=null) {
+            if(user.getJournalEntries() == null)
+                user.setJournalEntries(new ArrayList<>());
             user.getJournalEntries().add(savedEntry);
         //This is an incorrect line meant for checking how transactions happen in Spring Data MongoDB
 //            user.setUserName(null);

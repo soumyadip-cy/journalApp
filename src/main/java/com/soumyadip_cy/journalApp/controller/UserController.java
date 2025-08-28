@@ -5,12 +5,18 @@ import com.soumyadip_cy.journalApp.dto.UserCreateDTO;
 import com.soumyadip_cy.journalApp.dto.UserDTO;
 import com.soumyadip_cy.journalApp.entity.User;
 import com.soumyadip_cy.journalApp.mapper.UserMapper;
+import com.soumyadip_cy.journalApp.service.TextToSpeechService;
 import com.soumyadip_cy.journalApp.service.UserService;
 import com.soumyadip_cy.journalApp.service.WeatherService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -27,6 +33,7 @@ public class UserController {
 
     private final UserService userService;
     private final WeatherService weatherService;
+    private final TextToSpeechService textToSpeechService;
 
     //Should be transferred to admin
 //    @GetMapping
@@ -121,8 +128,34 @@ public class UserController {
             log.info("Greeting the user !");
             return new ResponseEntity<>("Hi, " + authentication.getName() + "." + greeting , HttpStatus.OK);
         } catch (Exception e) {
-            log.error("Exception occurred while greeting the user !");
+            log.error("Exception occurred while greeting the user !", e);
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    //Index starts from 1. This is the index of the journal entry, and not the object ID.
+    @GetMapping("/read-journal-entry/{entryIndex}")
+    public ResponseEntity<Resource> getAudio(@PathVariable int entryIndex) {
+        try {
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            String username = authentication.getName();
+            Optional<byte[]> audioBytesOptional = textToSpeechService.convertToSpeech(entryIndex, username);
+            if(audioBytesOptional.isPresent()) {
+                byte[] audioBytes = audioBytesOptional.get();
+                Resource resource = new ByteArrayResource(audioBytes);
+                HttpHeaders httpHeaders = new HttpHeaders();
+                httpHeaders.setContentType(MediaType.valueOf("audio/mpeg"));
+                httpHeaders.setContentDispositionFormData("attachment", "audio.mp3");
+                return ResponseEntity.ok()
+                        .headers(httpHeaders)
+                        .contentLength(resource.contentLength())
+                        .body(resource);
+            } else {
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
+        } catch (Exception e) {
+            log.error("Exception occurred while getting voice !", e);
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }

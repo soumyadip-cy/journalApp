@@ -3,13 +3,16 @@ package com.soumyadip_cy.journalApp.service;
 import com.soumyadip_cy.journalApp.api.response.CityResponse;
 import com.soumyadip_cy.journalApp.api.response.WeatherResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
 @Component
 public class WeatherService {
-    private static final String API_KEY = "BKOokQ2LPjr3rHEFAn0iNuOpoXI8cGdB";
+
+    @Value("${weather.api-key}")
+    private String API_KEY;
     String kolkataKey = "206690";
     private static final String CITY_API = "http://dataservice.accuweather.com/locations/v1/cities/search?apikey=%s&q=%s";
     private static final String WEATHER_API = "https://dataservice.accuweather.com/currentconditions/v1/%s?apikey=%s";
